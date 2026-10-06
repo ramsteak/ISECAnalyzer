@@ -121,10 +121,21 @@ def _split_gaussian(x, A, mu, sigma_L, sigma_R):
 
 def _emg(x, A, mu, sigma, lam):
     """Exponentially Modified Gaussian (EMG)."""
-    from scipy.special import erfc
+    from scipy.special import log_ndtr
     lam = max(lam, 1e-9)
+    sigma = max(sigma, np.finfo(float).tiny)
     z = (mu - x) / (np.sqrt(2) * sigma) + sigma * lam / np.sqrt(2)
-    return A * lam / 2 * np.exp(0.5 * (lam * sigma) ** 2 - lam * (x - mu)) * erfc(z)
+    # Evaluate erfc and the exponential together in log space.  During a
+    # fit, the two factors can overflow and underflow separately even when
+    # their product is finite.
+    log_value = (
+        np.log(lam / 2)
+        + 0.5 * (lam * sigma) ** 2
+        - lam * (x - mu)
+        + np.log(2) + log_ndtr(-z * np.sqrt(2))
+    )
+    limits = np.log(np.finfo(float).tiny), np.log(np.finfo(float).max)
+    return A * np.exp(np.clip(log_value, *limits))
 
 
 _FIT_MODELS = {
