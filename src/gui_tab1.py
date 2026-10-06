@@ -1491,6 +1491,8 @@ class Tab1(ttk.Frame):
                 else:
                     density = result.mass_flow_g_min / flow
                     self._density_var.set(f"{density:.8g}")
+                    self._solvent_var.set("Custom")
+                    self._on_solvent_changed()
                 self._vol_status_var.set(
                     f"Regression from {len(calibration_files)} selected file(s): "
                     f"mass flow={result.mass_flow_g_min:.6g} g/min, "
@@ -1514,6 +1516,8 @@ class Tab1(ttk.Frame):
             if mode != "time + weight (regression)":
                 self._vol_status_var.set(
                     f"Manual {mode} conversion applied to all {len(targets)} files.")
+            self._density = density
+            self._flow_rate = flow
             self.state.global_settings.density_g_ml = density
             self.state.global_settings.flow_rate_ml_min = flow
             self.state.global_settings.validate()
@@ -1533,6 +1537,7 @@ class Tab1(ttk.Frame):
 
     def _on_solvent_changed(self, *args):
         name = self._solvent_var.get()
+        self.state.global_settings.solvent = name
         density = next((d for sol_name, d in SOLVENTS if sol_name == name), None)
         if density is None:
             self._density_entry.configure(state="normal")
