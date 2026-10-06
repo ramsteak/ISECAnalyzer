@@ -1,0 +1,9 @@
+[project]
+name = "isec-analyzer"
+version = "0.1.0"
+description = "GUI application for inverse size exclusion chromatography analysis"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26", "pandas>=2.1", "scipy>=1.11", "matplotlib>=3.8", "lmfit>=1.2"]
+
+[project.scripts]
+isec-analyzer = "isec_analyzer:main"
