@@ -1288,7 +1288,7 @@ class Tab1(ttk.Frame):
         ax.set_ylabel(ylab, fontsize=8)
         ax.legend(fontsize=7, framealpha=0.7)
         ax.grid(True, alpha=0.25, color=BORDER)
-        self._fig.tight_layout(pad=1.2)
+        self._fig.subplots_adjust(left=0.12, right=0.98, bottom=0.16, top=0.94)
         self._canvas.draw()
 
     def _draw_single(self, ax, fd: FileData, color):
