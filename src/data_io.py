@@ -512,6 +512,25 @@ def export_elution_volumes(file_data_list: list[FileData], output_path: str):
     else:
         df.to_csv(output_path, index=False)
 
+
+def export_analyte_elution_data(file_data_list: list[FileData], output_path: str):
+    """Export analyte metadata and computed elution volumes."""
+    rows = []
+    for fd in file_data_list:
+        rows.append({
+            "Filename": fd.filename,
+            "Analyte type": fd.std_key,
+            "Size": fd.std_value,
+            "Hydrodynamic radius (nm)": fd.rh,
+            "Elution volume (ml)": fd.elution_volume,
+        })
+    df = pd.DataFrame(rows)
+    ext = os.path.splitext(output_path)[1].lower()
+    if ext == ".xlsx":
+        df.to_excel(output_path, index=False)
+    else:
+        df.to_csv(output_path, index=False)
+
 # ---------------------------------------------------------------------------
 # Robust filename metadata parsing
 # ---------------------------------------------------------------------------

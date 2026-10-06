@@ -273,6 +273,8 @@ GLOBAL SETTINGS (bottom of right sidebar)
 EXPORT
   Use "Export elution volumes…" to save all computed Ve and Rh values
   to CSV or Excel.
+  Use "Export analyte data…" to save filename, analyte type, size,
+  hydrodynamic radius, and elution volume with explicit column names.
 
 STANDARD FORMULAS
   PS:              Rh = 0.0246 × MW^0.588

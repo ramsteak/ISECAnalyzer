@@ -36,6 +36,7 @@ import matplotlib.cm as cm
 from .data_io import (
     FileData, COL_TYPES, UNIT_OPTIONS, DEFAULT_UNIT,
     SOLVENTS, SOLVENT_NAMES, export_elution_volumes,
+    export_analyte_elution_data,
 )
 from .standards import (
     STANDARD_KEYS, STANDARD_LABELS, detect_standard,
@@ -543,6 +544,7 @@ class Tab1(ttk.Frame):
         self._on_volume_mode_changed()
         ttk.Separator(p, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=3, sticky="ew", pady=4); r += 1
         _nofocus_btn(p, text="Export elution volumes…", command=self._export_elution).grid(row=r, column=0, columnspan=3, sticky="ew", pady=2)
+        _nofocus_btn(p, text="Export analyte data…", command=self._export_analyte_data).grid(row=r + 1, column=0, columnspan=3, sticky="ew", pady=2)
 
     # ── analysis panel ────────────────────────────────────────────────────────
 
@@ -1636,6 +1638,24 @@ class Tab1(ttk.Frame):
             return
         try:
             export_elution_volumes(self.file_data, path)
+            messagebox.showinfo("Export", f"Saved to:\n{path}")
+        except Exception as exc:
+            messagebox.showerror("Export error", str(exc))
+
+    def _export_analyte_data(self):
+        if not self.file_data:
+            messagebox.showinfo("Export", "No files loaded.")
+            return
+        path = filedialog.asksaveasfilename(
+            title="Export analyte data",
+            defaultextension=".csv",
+            filetypes=[("CSV", "*.csv"), ("Excel", "*.xlsx"), ("All", "*.*")],
+        )
+        if not path:
+            return
+        try:
+            self._compute_all_elutions()
+            export_analyte_elution_data(self.file_data, path)
             messagebox.showinfo("Export", f"Saved to:\n{path}")
         except Exception as exc:
             messagebox.showerror("Export error", str(exc))
